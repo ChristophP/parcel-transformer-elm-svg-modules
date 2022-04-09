@@ -1,0 +1,18 @@
+{
+  "name": "parcel-transformer-elm-svg-modules",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/ElmSvgModulesTransformer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christoph \"Deedo\" Pölt",
+  "license": "ISC",
+  "engines": {
+    "parcel": "2.x"
+  },
+  "dependencies": {
+    "glob": "^7.2.0",
+    "svg2elm": "^1.2.4"
+  }
+}
