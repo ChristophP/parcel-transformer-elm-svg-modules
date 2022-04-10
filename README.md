@@ -38,6 +38,13 @@ To configure add this to your `package.json`.
 
 ### Using the new Module in your code
 
+Make sure to add `elm/svg` and `elm/virtual-dom` to your `elm.json`
+
+```sh
+elm install elm/svg
+elm install elm/virtual-dom
+```
+
 ```elm
 -- the imports are named after the original file names of the SVGs
 -- burger-menu.svg will result in an burgerMenu function
