@@ -56,7 +56,12 @@ module.exports = new Transformer({
         });
       }
 
-      await fs.writeFile(resolvedModulePath, moduleCode);
+      const finalCode = [
+        "-- THIS MODULE IS GENERATED. DON'T EDIT BY HAND.",
+        moduleCode,
+      ].join("\n\n");
+
+      await fs.writeFile(resolvedModulePath, finalCode);
     };
 
     await Promise.allSettled(config.map(generate));
