@@ -10,6 +10,9 @@ const { promisify } = require("util");
 const { md } = ThrowableDiagnostic;
 const asyncGlob = promisify(glob);
 
+const settle = (promise) =>
+  Promise.allSettled([promise]).then(([{ value, reason }]) => [reason, value]);
+
 module.exports = new Transformer({
   async loadConfig({ config }) {
     const { contents, filePath } = await config.getConfig(["package.json"]);
@@ -17,16 +20,6 @@ module.exports = new Transformer({
     return contents.elmSvgModules;
   },
   async transform({ asset, config, logger }) {
-    // Retrieve the asset's source code and source map.
-    // const source = await asset.getCode();
-    // const sourceMap = await asset.getMap();
-
-    // Run it through some compiler, and set the results
-    // on the asset.
-    // const { code, map } = compile(source, sourceMap);
-    // asset.setCode(code);
-    // asset.setMap(map);
-
     const generate = async ({
       inputSvgs,
       outputModuleName = "Icons",
@@ -39,36 +32,33 @@ module.exports = new Transformer({
       logger.info({
         message: `Writing module to: ${resolvedModulePath} for ${inputSvgs}`,
       });
-      return asyncGlob(inputSvgs, {})
-        .then(async (filePaths) => {
-          logger.verbose({ message: `Found SVGs ${filePaths.join(", ")}` });
-          try {
-            const moduleCode = await generateModule(
-              outputModuleName,
-              filePaths
-            );
-
-            await fs.writeFile(resolvedModulePath, moduleCode);
-          } catch (writeError) {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: `Failed to generate ${outputModuleName}`,
-                stack: writeError.stack,
-              },
-            });
-          }
-        })
-        .catch((err) => {
-          if (err) {
-            throw new ThrowableDiagnostic({
-              diagnostic: {
-                message: `Failed to resolve file path for ${outputModuleName}`,
-                stack: err.stack,
-              },
-            });
-          }
+      const [globErr, filePaths] = await settle(asyncGlob(inputSvgs, {}));
+      if (globErr) {
+        throw new ThrowableDiagnostic({
+          diagnostic: {
+            message: `Failed to resolve file path for ${outputModuleName}`,
+            stack: globErr.stack,
+          },
         });
+      }
+
+      logger.verbose({ message: `Found SVGs ${filePaths.join(", ")}` });
+      const [genErr, moduleCode] = await settle(
+        generateModule(outputModuleName, filePaths)
+      );
+
+      if (genErr) {
+        throw new ThrowableDiagnostic({
+          diagnostic: {
+            message: `Failed to generate ${outputModuleName}`,
+            stack: genErr.stack,
+          },
+        });
+      }
+
+      await fs.writeFile(resolvedModulePath, moduleCode);
     };
+
     await Promise.allSettled(config.map(generate));
 
     logger.info({ message: md`Generated ${config.length} module(s)` });
