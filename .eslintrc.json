@@ -1,0 +1,50 @@
+{
+  "env": {
+    "es2021": true,
+    "browser": true
+  },
+  "extends": [
+    "airbnb-base",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "settings": {
+    "import/core-modules": [
+      "redux"
+    ]
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "camelcase": "off",
+    "block-scoped-var": "off",
+    "no-underscore-dangle": "off",
+    "react/destructuring-assignment": "off",
+    "consistent-return": "off",
+    "import/prefer-default-export": "off",
+    "vars-on-top": "off",
+    "default-param-last": "off",
+    "no-redeclare": "off",
+    "radix": "off",
+    "class-methods-use-this": "off",
+    "react/jsx-filename-extension": "off",
+    "react/prop-types": "off",
+    "react/button-has-type": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/alt-text": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off"
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2022,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}

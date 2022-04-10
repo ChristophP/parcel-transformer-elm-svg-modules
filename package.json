@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/ElmSvgModulesTransformer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src/"
   },
   "author": "Christoph \"Deedo\" Pölt",
   "license": "ISC",
@@ -16,5 +16,13 @@
     "@parcel/plugin": "^2.4.1",
     "glob": "^7.2.0",
     "svg2elm": "^1.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.6.2"
   }
 }

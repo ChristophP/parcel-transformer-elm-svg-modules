@@ -26,12 +26,17 @@ Then in your `.parcelrc` add the transformer BEFORE the regular Elm tranform
 ### Configuration
 
 To configure add this to your `package.json`.
+The following entry would load SVGs from `src/assets/images/`
+and combine them into an Elm Module named `Acme.Icons` located at
+`src/Acme/Icons.elm`.
+You can add more entries to the array to generate multiple modules.
+
 ```
   "elmSvgModules": [
     {
-      "src": "src/assets/images/svg/*.svg", // a glob to place where your SVGs are
-      "name": "Acme.Icons", // the module name of the Elm module that's generated
-      "dest": "src/Acme/Icons.elm" // the location of the Elm module
+      "inputSvgs": "src/assets/images/svg/*.svg", // a glob to place where your SVGs are
+      "outputModuleName": "Icons", // the module name of the Elm module that's generated
+      "outputModuleDir": "src/" // the location of the Elm module
     }
   ],
 ```

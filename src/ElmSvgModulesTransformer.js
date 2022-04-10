@@ -3,7 +3,7 @@ const { Transformer } = require("@parcel/plugin");
 
 const { generateModule } = require("svg2elm");
 const glob = require("glob");
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const { promisify } = require("util");
 
@@ -18,12 +18,8 @@ module.exports = new Transformer({
   },
   async transform({ asset, config, logger }) {
     // Retrieve the asset's source code and source map.
-    const source = await asset.getCode();
-    const sourceMap = await asset.getMap();
-
-    logger.info({
-      message: md`ElmSvg config: ${JSON.stringify(config)}`,
-    });
+    // const source = await asset.getCode();
+    // const sourceMap = await asset.getMap();
 
     // Run it through some compiler, and set the results
     // on the asset.
@@ -31,31 +27,51 @@ module.exports = new Transformer({
     // asset.setCode(code);
     // asset.setMap(map);
 
-    const generate = async ({ src, name, dest }) => {
-      await fs.promises.mkdir(path.dirname(dest), { recursive: true });
-      return asyncGlob(src, {})
-        .then(async (filePaths) => {
-          logger.info({ message: JSON.stringify(filePaths) });
-          try {
-            const moduleCode = await generateModule(name, filePaths);
+    const generate = async ({
+      inputSvgs,
+      outputModuleName = "Icons",
+      outputModuleDir = "src/",
+    }) => {
+      const elmModulePath = outputModuleName.replace(".", "/").concat(".elm");
+      const resolvedModulePath = path.join(outputModuleDir, elmModulePath);
+      await fs.mkdir(path.dirname(resolvedModulePath), { recursive: true });
 
-            await fs.promises.writeFile(dest, moduleCode);
+      logger.info({
+        message: `Writing module to: ${resolvedModulePath} for ${inputSvgs}`,
+      });
+      return asyncGlob(inputSvgs, {})
+        .then(async (filePaths) => {
+          logger.verbose({ message: `Found SVGs ${filePaths.join(", ")}` });
+          try {
+            const moduleCode = await generateModule(
+              outputModuleName,
+              filePaths
+            );
+
+            await fs.writeFile(resolvedModulePath, moduleCode);
           } catch (writeError) {
-            error(`Failed to generate ${name}`, writeError);
+            throw new ThrowableDiagnostic({
+              diagnostic: {
+                message: `Failed to generate ${outputModuleName}`,
+                stack: writeError.stack,
+              },
+            });
           }
         })
         .catch((err) => {
           if (err) {
             throw new ThrowableDiagnostic({
               diagnostic: {
-                message: `Failed to resolve file path for ${name}`,
+                message: `Failed to resolve file path for ${outputModuleName}`,
                 stack: err.stack,
               },
             });
           }
         });
-    }
+    };
     await Promise.allSettled(config.map(generate));
+
+    logger.info({ message: md`Generated ${config.length} module(s)` });
 
     // Return the asset
     return [asset];
