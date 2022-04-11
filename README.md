@@ -68,9 +68,9 @@ Then in your Elm use your SVGs by importing the generated module.
 import Icons (burgerMenu, someOtherIcon)
 
 view model =
-  div [
-    burgerMenu [],
-    someOtherIcon []
+  div []
+    [ burgerMenu []
+    , someOtherIcon []
     ]
 ```
 
