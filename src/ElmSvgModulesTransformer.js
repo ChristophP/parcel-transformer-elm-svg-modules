@@ -32,6 +32,8 @@ module.exports = new Transformer({
       logger.info({
         message: `Writing module to: ${resolvedModulePath} for ${inputSvgs}`,
       });
+
+      // glob for svgs
       const [globErr, filePaths] = await settle(asyncGlob(inputSvgs, {}));
       if (globErr) {
         throw new ThrowableDiagnostic({
@@ -43,6 +45,8 @@ module.exports = new Transformer({
       }
 
       logger.verbose({ message: `Found SVGs ${filePaths.join(", ")}` });
+
+      // generate module code
       const [genErr, moduleCode] = await settle(
         generateModule(outputModuleName, filePaths)
       );
@@ -56,6 +60,13 @@ module.exports = new Transformer({
         });
       }
 
+      // set up invalidations
+      asset.invalidateOnFileCreate({ glob: inputSvgs });
+      filePaths.forEach((filePath) => {
+        asset.invalidateOnFileChange(filePath);
+      });
+
+      // write generated Elm module to disk
       const finalCode = [
         "-- THIS MODULE IS GENERATED. DON'T EDIT BY HAND.",
         moduleCode,
