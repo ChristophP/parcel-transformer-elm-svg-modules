@@ -13,20 +13,17 @@ const asyncGlob = promisify(glob);
 const settle = (promise) =>
   Promise.allSettled([promise]).then(([{ value, reason }]) => [reason, value]);
 
-const defaultOutputDir = "elm-stuff/parcel-transformer-elm-svg-modules/";
-
 module.exports = new Transformer({
   async loadConfig({ config }) {
-    const { contents: packageJson } = await config.getConfig(["package.json"]);
-    const { contents: elmJson } = await config.getConfig(["elm.json"]);
+    const { contents, filePath } = await config.getConfig(["package.json"]);
 
-    return { elmSvgModules: packageJson.elmSvgModules, elmJson };
+    return contents.elmSvgModules;
   },
   async transform({ asset, config, logger }) {
     const generate = async ({
       inputSvgs,
       outputModuleName = "Icons",
-      outputModuleDir = defaultOutputDir,
+      outputModuleDir = "src/",
     }) => {
       const elmModulePath = outputModuleName.replace(".", "/").concat(".elm");
       const resolvedModulePath = path.join(outputModuleDir, elmModulePath);
@@ -35,19 +32,6 @@ module.exports = new Transformer({
       logger.info({
         message: `Writing module to: ${resolvedModulePath} for ${inputSvgs}`,
       });
-
-      // warn if source-directory not set
-      if (
-        outputModuleDir === defaultOutputDir &&
-        !config.elmJson["source-directories"].includes(outputModuleDir)
-      ) {
-        logger.warn({
-          message: `${outputModuleDir} not found in Elm compiler configuration.`,
-          hints: [
-            "Add it to the 'source-directories' section of you elm.json.",
-          ],
-        });
-      }
 
       // glob for svgs
       const [globErr, filePaths] = await settle(asyncGlob(inputSvgs, {}));
@@ -95,7 +79,7 @@ module.exports = new Transformer({
       }
     };
 
-    await Promise.allSettled(config.elmSvgModules.map(generate));
+    await Promise.allSettled(config.map(generate));
 
     logger.info({ message: md`Generated ${config.length} module(s)` });
 
