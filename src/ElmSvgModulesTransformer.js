@@ -67,12 +67,16 @@ module.exports = new Transformer({
       });
 
       // write generated Elm module to disk
-      const finalCode = [
-        "-- THIS MODULE IS GENERATED. DON'T EDIT BY HAND.",
-        moduleCode,
-      ].join("\n\n");
+      const finalCode = `-- THIS MODULE IS GENERATED. DON'T EDIT BY HAND.\n\n${moduleCode}`;
 
-      await fs.writeFile(resolvedModulePath, finalCode);
+      const content = await fs
+        .readFile(resolvedModulePath, "utf-8")
+        .catch(() => "");
+
+      // only write module if code is new or has changed
+      if (content === "" || content !== finalCode) {
+        await fs.writeFile(resolvedModulePath, finalCode);
+      }
     };
 
     await Promise.allSettled(config.map(generate));
