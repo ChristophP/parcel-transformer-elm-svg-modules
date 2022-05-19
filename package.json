@@ -11,6 +11,9 @@
   "engines": {
     "parcel": "2.x"
   },
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "@parcel/diagnostic": "^2.4.1",
     "@parcel/plugin": "^2.4.1",
