@@ -37,40 +37,19 @@ Here's an example:
     {
       "inputSvgs": "src/assets/images/svg/*.svg", // a glob to place where your SVGs are
       "outputModuleName": "Icons", // the module name of the Elm module that's generated
-      "outputModuleDir": "elm-stuff/parcel-transformer-elm-svg-modules/" // the location of the Elm module
+      "outputModuleDir": "src/" // the location of the Elm module
     }
   ],
 ```
 
-|       Option          |     Required            |           Default                               |
-|       ------          |        -------          |         -------                                 |
-|  inputSvgs            |        Yes              |          -                                      |
-|  outputModuleName     |        No               |         `Icons`                                 |
-|  outputModuleDir      |        no               | `elm-stuff/parcel-transformer-elm-svg-modules/` |
+|       Option          |     Required            |   Default                |
+|       ------          |        -------          |         -------          |
+|  inputSvgs            |        Yes              |          -               |
+|  outputModuleName     |        No               |         Icons            |
+|  outputModuleDir      |        no               |          src/            |
 
 `outputModuleName` can also be something like `Acme.Icons` to generate a nested
 module.
-
-#### Dealing with the generated file
-
-By default this plugin will put the generated code into `elm-stuff/parcel-transformer-elm-svg-modules/`,
-since most likely you don't want to have the generated file in version control.
-
-For Elm to be able to find the code though, you'll have to this the folder to
-your `elm.json`.
-
-```json
-{
-  "source-directories": [
-    "src/",
-    "elm-stuff/parcel-transformer-elm-svg-modules/"
-  ]
-}
-```
-
-##### If for whatever reason, you wanna add the code to source control ...
-
-... just pick a location for `outputModuleDir` that works for you.
 
 ### Using the new Module in your code
 
@@ -94,6 +73,12 @@ view model =
     , someOtherIcon []
     ]
 ```
+
+### Dealing with the generated file
+
+It is recommended to add the path to the generated Elm module to your `.gitignore`.
+Maybe this can be avoided in the future as my knowledge of the parcel plugin system
+grows, but for know just ignore the file.
 
 ## How it works
 
