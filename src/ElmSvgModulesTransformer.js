@@ -23,7 +23,7 @@ module.exports = new Transformer({
     const generate = async ({
       inputSvgs,
       outputModuleName = "Icons",
-      outputModuleDir = "src/",
+      outputModuleDir = "src",
     }) => {
       const elmModulePath = outputModuleName
         .replace(".", path.sep)
