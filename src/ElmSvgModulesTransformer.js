@@ -15,7 +15,7 @@ const settle = (promise) =>
 
 module.exports = new Transformer({
   async loadConfig({ config }) {
-    const { contents, filePath } = await config.getConfig(["package.json"]);
+    const { contents } = await config.getConfig(["package.json"]);
 
     return contents.elmSvgModules;
   },
@@ -23,9 +23,11 @@ module.exports = new Transformer({
     const generate = async ({
       inputSvgs,
       outputModuleName = "Icons",
-      outputModuleDir = "src/",
+      outputModuleDir = "src",
     }) => {
-      const elmModulePath = outputModuleName.replace(".", "/").concat(".elm");
+      const elmModulePath = outputModuleName
+        .replace(".", path.sep)
+        .concat(".elm");
       const resolvedModulePath = path.join(outputModuleDir, elmModulePath);
       await fs.mkdir(path.dirname(resolvedModulePath), { recursive: true });
 

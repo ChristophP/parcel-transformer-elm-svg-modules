@@ -3,7 +3,7 @@
 Elm and SVGs are both awesome. Luckily parcel can help us turn SVG straight into
 an Elm module.
 
-**This plugin is for ParcelJS version 2**
+**This plugin is for ParcelJS 📦 version 2**
 
 ## Installing and Setup
 
@@ -35,9 +35,9 @@ Here's an example:
 ```
   "elmSvgModules": [
     {
-      "inputSvgs": "src/assets/images/svg/*.svg", // a glob to place where your SVGs are
-      "outputModuleName": "Icons", // the module name of the Elm module that's generated
-      "outputModuleDir": "src/" // the location of the Elm module
+      "inputSvgs": "src/assets/images/svg/*.svg", // a glob pattern to place where your SVGs are
+      "outputModuleName": "Icons", // the module name of the Elm module that will be generated
+      "outputModuleDir": "src" // the location where Elm module will be generated
     }
   ],
 ```
@@ -46,10 +46,11 @@ Here's an example:
 |       ------          |        -------          |         -------          |
 |  inputSvgs            |        Yes              |          -               |
 |  outputModuleName     |        No               |         Icons            |
-|  outputModuleDir      |        no               |          src/            |
+|  outputModuleDir      |        no               |          src             |
 
 `outputModuleName` can also be something like `Acme.Icons` to generate a nested
-module.
+module. Together with `outputModuleDir` of `src` the final module will be at
+`src/Acme/Icons.elm` (using `\` on Windows)
 
 ### Using the new Module in your code
 
@@ -74,7 +75,24 @@ view model =
     ]
 ```
 
-### Dealing with the generated file
+### Dealing with the generated file (the recommended way)
+
+It's recommended to put the generated files into the `elm-stuff` directory,
+where it is likely ignored git by anyway. It works well and you'll never
+really see the generated files while coding.
+
+1. Set the `outputModuleDir` to `elm-stuff/elm-svg-modules`
+2. Add `elm-stuff/elm-svg-modules` to the `source-directories` in your project's `elm.json`
+
+### Dealing with the generated file (the other way)
+
+If for some reason you do not want to have the generated file in `elm-stuff`,
+you can just put them somewhere else, i.e. your `src` folder and add them to
+your `.gitignore`.
+
+1. Set the `outputModuleDir` to `src`
+2. Add `src/Icons.elm` (or however the file is named in your configuration) to
+the `.gitignore` in your project.
 
 It is recommended to add the path to the generated Elm module to your `.gitignore`.
 Maybe this can be avoided in the future as my knowledge of the parcel plugin system
