@@ -25,7 +25,9 @@ module.exports = new Transformer({
       outputModuleName = "Icons",
       outputModuleDir = "src/",
     }) => {
-      const elmModulePath = outputModuleName.replace(".", "/").concat(".elm");
+      const elmModulePath = outputModuleName
+        .replace(".", path.sep)
+        .concat(".elm");
       const resolvedModulePath = path.join(outputModuleDir, elmModulePath);
       await fs.mkdir(path.dirname(resolvedModulePath), { recursive: true });
 
