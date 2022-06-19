@@ -94,10 +94,6 @@ your `.gitignore`.
 2. Add `src/Icons.elm` (or however the file is named in your configuration) to
 the `.gitignore` in your project.
 
-It is recommended to add the path to the generated Elm module to your `.gitignore`.
-Maybe this can be avoided in the future as my knowledge of the parcel plugin system
-grows, but for know just ignore the file.
-
 ## How it works
 
 When the Elm module is processed by parcel this plugin uses its config to
