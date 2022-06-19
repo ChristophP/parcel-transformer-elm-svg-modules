@@ -15,7 +15,7 @@ const settle = (promise) =>
 
 module.exports = new Transformer({
   async loadConfig({ config }) {
-    const { contents, filePath } = await config.getConfig(["package.json"]);
+    const { contents } = await config.getConfig(["package.json"]);
 
     return contents.elmSvgModules;
   },
