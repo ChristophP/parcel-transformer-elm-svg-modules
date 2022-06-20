@@ -26,7 +26,7 @@ module.exports = new Transformer({
       outputModuleDir = "src",
     }) => {
       const elmModulePath = outputModuleName
-        .replace("g.", path.sep)
+        .replace(/\./g, path.sep)
         .concat(".elm");
       const resolvedModulePath = path.join(outputModuleDir, elmModulePath);
       await fs.mkdir(path.dirname(resolvedModulePath), { recursive: true });
